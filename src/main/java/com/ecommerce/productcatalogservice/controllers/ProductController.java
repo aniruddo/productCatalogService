@@ -17,7 +17,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private IProductService productService;
+    private IProductService iProductService;
 
 //    public ProductController(IProductService productService) {
 //        this.productService = productService;
@@ -25,7 +25,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<ProductDto> getProducts() {
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = iProductService.getAllProducts();
         List<ProductDto> productDtos = new ArrayList<>();
         if(products!=null && !products.isEmpty()) {
             for(Product product : products) {
@@ -44,7 +44,7 @@ public class ProductController {
             if (productId < 1) {
                 throw new RuntimeException("Product not found");
             }
-            Product product = productService.getProductById(productId);
+            Product product = iProductService.getProductById(productId);
             if (product == null) return null;
             return new ResponseEntity<>(from(product), HttpStatus.OK);
         }catch (RuntimeException exception) {
@@ -54,14 +54,15 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ProductDto createProduct(@RequestBody ProductDto product) {
-        return null;
+    public ProductDto createProduct(@RequestBody ProductDto productDto) {
+        Product product = from(productDto);
+        Product response = iProductService.createProduct(product);
+        return from(response);
     }
-
 
     @PutMapping("/products/{id}")
     public ProductDto replaceProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
-        Product product = productService.replaceProduct(id,from(productDto));
+        Product product = iProductService.replaceProduct(id,from(productDto));
         return from(product);
     }
 
@@ -75,7 +76,9 @@ public class ProductController {
         product.setDescription(productDto.getDescription());
         if(productDto.getCategory() != null) {
             Category category = new Category();
+            category.setId(productDto.getCategory().getId());
             category.setName(productDto.getCategory().getName());
+            category.setDescription(productDto.getCategory().getDescription());
             product.setCategory(category);
         }
         return product;
@@ -99,9 +102,9 @@ public class ProductController {
         return productDto;
     }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<String> handleExceptions(Exception exception) {
-        return new ResponseEntity<>("kuch toh phata hai", HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler({RuntimeException.class})
+//    public ResponseEntity<String> handleExceptions(Exception exception) {
+//        return new ResponseEntity<>("kuch toh phata hai", HttpStatus.BAD_REQUEST);
+//    }
 
 }
