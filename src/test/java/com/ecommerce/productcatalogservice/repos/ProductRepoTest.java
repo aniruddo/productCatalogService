@@ -1,9 +1,13 @@
 package com.ecommerce.productcatalogservice.repos;
 
+import com.ecommerce.productcatalogservice.models.Category;
 import com.ecommerce.productcatalogservice.models.Product;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProductRepoTest {
     @Autowired
     ProductRepo productRepo;
+
+    @Autowired
+    CategoryRepo categoryRepo;
 
     @Test
     public void testSaveProduct() {
@@ -24,4 +31,16 @@ public class ProductRepoTest {
         productRepo.save(product);
         assertNotNull(product.getId());
     }
+
+    @Test
+    @Transactional
+    public void runSubQueries() {
+        List<Category> cats = categoryRepo.findAll();
+        for(Category category : cats) {
+            for(Product product :  category.getProducts()) {
+                System.out.println(product.getDescription());
+            }
+        }
+    }
+
 }
