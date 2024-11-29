@@ -13,3 +13,5 @@ public class SearchProductDto {
     private Integer pageNumber;
     private List<SortParam> sortParams;
 }
+
+

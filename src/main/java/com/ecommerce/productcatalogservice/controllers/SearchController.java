@@ -18,11 +18,11 @@ import java.util.List;
 @RequestMapping("/search")
 public class SearchController {
     @Autowired
-    private ISearchService searchService;
+    private ISearchService iSearchService;
 
     @PostMapping
     public Page<Product> searchProducts(@RequestBody SearchProductDto searchProductDto) {
         System.out.println("Searching...");
-        return searchService.searchProducts(searchProductDto.getQuery(),searchProductDto.getPageNumber(),searchProductDto.getPageSize(),searchProductDto.getSortParams());
+        return iSearchService.searchProducts(searchProductDto.getQuery(),searchProductDto.getPageNumber(),searchProductDto.getPageSize(),searchProductDto.getSortParams());
     }
 }
